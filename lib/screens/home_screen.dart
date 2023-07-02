@@ -3,6 +3,7 @@ import 'package:sunspark_web/screens/home_tabs/citizen_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/dashboard_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/police_tab.dart';
 import 'package:sunspark_web/widgets/text_widget.dart';
+import 'package:sunspark_web/widgets/textfield_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,9 +19,74 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool citizenSelected = false;
 
+  final nameController = TextEditingController();
+  final contactnumberController = TextEditingController();
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: policeSelected
+          ? FloatingActionButton(
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: TextBold(
+                          text: 'Adding new Police Officer',
+                          fontSize: 18,
+                          color: Colors.blue,
+                        ),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFieldWidget(
+                                label: 'Name of the Officer',
+                                controller: nameController),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextFieldWidget(
+                                label: 'Contact Number',
+                                controller: contactnumberController),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextFieldWidget(
+                                label: 'Username',
+                                controller: usernameController),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextFieldWidget(
+                                isObscure: true,
+                                isPassword: true,
+                                label: 'Password',
+                                controller: passwordController),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: TextBold(
+                              text: 'Create',
+                              fontSize: 18,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ],
+                      );
+                    });
+              })
+          : null,
       body: Row(
         children: [
           Padding(
