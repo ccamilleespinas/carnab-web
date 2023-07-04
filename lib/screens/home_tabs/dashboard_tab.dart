@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:sunspark_web/widgets/text_widget.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DashboardTab extends StatelessWidget {
@@ -32,6 +33,25 @@ class DashboardTab extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextRegular(
+                          text: 'Title here',
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                        TextBold(
+                          text: '100',
+                          fontSize: 58,
+                          color: Colors.black,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   width: 20,
@@ -44,6 +64,25 @@ class DashboardTab extends StatelessWidget {
                       color: Colors.grey,
                     ),
                     borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextRegular(
+                          text: 'Title here',
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                        TextBold(
+                          text: '100',
+                          fontSize: 58,
+                          color: Colors.black,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -63,6 +102,25 @@ class DashboardTab extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextRegular(
+                          text: 'Title here',
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                        TextBold(
+                          text: '100',
+                          fontSize: 58,
+                          color: Colors.black,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   width: 20,
@@ -75,6 +133,25 @@ class DashboardTab extends StatelessWidget {
                       color: Colors.grey,
                     ),
                     borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextRegular(
+                          text: 'Title here',
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                        TextBold(
+                          text: '100',
+                          fontSize: 58,
+                          color: Colors.black,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
