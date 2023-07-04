@@ -203,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: dashboardSelected
-                ? const DashboardTab()
+                ? DashboardTab()
                 : policeSelected
                     ? const PoliceTab()
                     : const CitizenTab(),
