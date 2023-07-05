@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sunspark_web/screens/home_tabs/citizen_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/dashboard_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/police_tab.dart';
+import 'package:sunspark_web/screens/home_tabs/reports_tab.dart';
 import 'package:sunspark_web/widgets/text_widget.dart';
 import 'package:sunspark_web/widgets/textfield_widget.dart';
 
@@ -18,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool policeSelected = false;
 
   bool citizenSelected = false;
+  bool reportsSelected = false;
 
   final nameController = TextEditingController();
   final contactnumberController = TextEditingController();
@@ -131,6 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     dashboardSelected = !dashboardSelected;
                                     policeSelected = false;
                                     citizenSelected = false;
+                                    reportsSelected = false;
                                   });
                                 },
                                 child: dashboardSelected
@@ -154,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     policeSelected = !policeSelected;
                                     dashboardSelected = false;
                                     citizenSelected = false;
+                                    reportsSelected = false;
                                   });
                                 },
                                 child: policeSelected
@@ -177,6 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     citizenSelected = !citizenSelected;
                                     policeSelected = false;
                                     dashboardSelected = false;
+                                    reportsSelected = false;
                                   });
                                 },
                                 child: citizenSelected
@@ -187,6 +192,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                       )
                                     : TextRegular(
                                         text: 'Citizen List',
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    reportsSelected = !reportsSelected;
+                                    policeSelected = false;
+                                    dashboardSelected = false;
+                                    citizenSelected = false;
+                                  });
+                                },
+                                child: reportsSelected
+                                    ? TextBold(
+                                        text: 'Reports List',
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      )
+                                    : TextRegular(
+                                        text: 'Reports List',
                                         fontSize: 16,
                                         color: Colors.grey,
                                       ),
@@ -206,7 +235,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? DashboardTab()
                 : policeSelected
                     ? const PoliceTab()
-                    : const CitizenTab(),
+                    : citizenSelected
+                        ? const CitizenTab()
+                        : const ReportsTab(),
           ),
         ],
       ),
