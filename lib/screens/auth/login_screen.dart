@@ -3,6 +3,8 @@ import 'package:sunspark_web/screens/home_screen.dart';
 import 'package:sunspark_web/widgets/button_widget.dart';
 import 'package:sunspark_web/widgets/textfield_widget.dart';
 
+import '../../widgets/toast_widget.dart';
+
 class LoginScreen extends StatelessWidget {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -43,16 +45,16 @@ class LoginScreen extends StatelessWidget {
               color: Colors.blue,
               label: 'Login',
               onPressed: () {
-                // if (usernameController.text == 'username' &&
-                //     passwordController.text == 'password') {
-                //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                //       builder: (context) => const HomeScreen()));
-                //   showToast('Logged in Succesfully!');
-                // } else {
-                //   showToast('INVALID ACCOUNT!');
-                // }
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
+                if (usernameController.text == 'username' &&
+                    passwordController.text == 'password') {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const HomeScreen()));
+                  showToast('Logged in Succesfully!');
+                } else {
+                  showToast('INVALID ACCOUNT!');
+                }
+                // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                //     builder: (context) => const HomeScreen()));
               },
             ),
           ],

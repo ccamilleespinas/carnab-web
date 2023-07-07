@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sunspark_web/screens/home_tabs/citizen_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/dashboard_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/police_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/reports_tab.dart';
+import 'package:sunspark_web/services/add_officer.dart';
 import 'package:sunspark_web/widgets/text_widget.dart';
 import 'package:sunspark_web/widgets/textfield_widget.dart';
+
+import '../widgets/toast_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -76,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         actions: [
                           TextButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              register(context);
                             },
                             child: TextBold(
                               text: 'Create',
@@ -242,5 +246,22 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  register(context) async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: '${usernameController.text}@carnab.com',
+          password: passwordController.text);
+
+      addOfficer(nameController.text, usernameController.text,
+          contactnumberController.text);
+
+      showToast("Registered Succesfully!");
+      Navigator.pop(context);
+    } on Exception catch (e) {
+      Navigator.pop(context);
+      showToast("An error occurred: $e");
+    }
   }
 }
