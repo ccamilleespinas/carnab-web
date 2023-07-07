@@ -29,6 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final contactnumberController = TextEditingController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final ageController = TextEditingController();
+  final genderController = TextEditingController();
+  final addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +64,22 @@ class _HomeScreenState extends State<HomeScreen> {
                             TextFieldWidget(
                                 label: 'Contact Number',
                                 controller: contactnumberController),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextFieldWidget(
+                                label: 'Age', controller: ageController),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextFieldWidget(
+                                label: 'Gender', controller: genderController),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextFieldWidget(
+                                label: 'Address',
+                                controller: addressController),
                             const SizedBox(
                               height: 10,
                             ),
@@ -254,8 +273,13 @@ class _HomeScreenState extends State<HomeScreen> {
           email: '${usernameController.text}@carnab.com',
           password: passwordController.text);
 
-      addOfficer(nameController.text, usernameController.text,
-          contactnumberController.text);
+      addOfficer(
+          nameController.text,
+          usernameController.text,
+          contactnumberController.text,
+          ageController.text,
+          genderController.text,
+          addressController.text);
 
       showToast("Registered Succesfully!");
       Navigator.pop(context);
