@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
 import '../../widgets/text_widget.dart';
 
 class CitizenTab extends StatefulWidget {
@@ -57,38 +58,67 @@ class _CitizenTabState extends State<CitizenTab> {
           const SizedBox(
             height: 20,
           ),
-          Expanded(
-            child: SizedBox(
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      title: TextBold(
-                          text: 'Name of the citizen',
-                          fontSize: 18,
-                          color: Colors.black),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextRegular(
-                              text: 'Contact Number of the citizen',
-                              fontSize: 14,
-                              color: Colors.grey),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          TextRegular(
-                              text: 'Address of the citizen',
-                              fontSize: 14,
-                              color: Colors.grey),
-                        ],
-                      ),
-                    ),
+          StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('Users')
+                  .where('name',
+                      isGreaterThanOrEqualTo:
+                          toBeginningOfSentenceCase(nameSearched))
+                  .where('name',
+                      isLessThan: '${toBeginningOfSentenceCase(nameSearched)}z')
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  print(snapshot.error);
+                  return const Center(child: Text('Error'));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  print('waiting');
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.black,
+                    )),
                   );
-                },
-              ),
-            ),
-          ),
+                }
+
+                final data = snapshot.requireData;
+                return Expanded(
+                  child: SizedBox(
+                    child: ListView.builder(
+                      itemCount: data.docs.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          child: ListTile(
+                            title: TextBold(
+                                text: data.docs[index]['name'],
+                                fontSize: 18,
+                                color: Colors.black),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextRegular(
+                                    text: data.docs[index]['email'],
+                                    fontSize: 14,
+                                    color: Colors.grey),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                TextRegular(
+                                    text: data.docs[index]['address'],
+                                    fontSize: 14,
+                                    color: Colors.grey),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              }),
         ],
       )),
     );

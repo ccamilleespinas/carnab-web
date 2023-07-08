@@ -52,49 +52,52 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 18,
                           color: Colors.blue,
                         ),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextFieldWidget(
-                                label: 'Name of the Officer',
-                                controller: nameController),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextFieldWidget(
-                                label: 'Contact Number',
-                                controller: contactnumberController),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextFieldWidget(
-                                label: 'Age', controller: ageController),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextFieldWidget(
-                                label: 'Gender', controller: genderController),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextFieldWidget(
-                                label: 'Address',
-                                controller: addressController),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextFieldWidget(
-                                label: 'Username',
-                                controller: usernameController),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextFieldWidget(
-                                isObscure: true,
-                                isPassword: true,
-                                label: 'Password',
-                                controller: passwordController),
-                          ],
+                        content: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFieldWidget(
+                                  label: 'Name of the Officer',
+                                  controller: nameController),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextFieldWidget(
+                                  label: 'Contact Number',
+                                  controller: contactnumberController),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextFieldWidget(
+                                  label: 'Age', controller: ageController),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextFieldWidget(
+                                  label: 'Gender',
+                                  controller: genderController),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextFieldWidget(
+                                  label: 'Address',
+                                  controller: addressController),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextFieldWidget(
+                                  label: 'Username',
+                                  controller: usernameController),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextFieldWidget(
+                                  isObscure: true,
+                                  isPassword: true,
+                                  label: 'Password',
+                                  controller: passwordController),
+                            ],
+                          ),
                         ),
                         actions: [
                           TextButton(
