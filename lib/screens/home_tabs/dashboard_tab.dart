@@ -16,6 +16,7 @@ class _DashboardTabState extends State<DashboardTab> {
   void initState() {
     super.initState();
     getData();
+    getData1();
   }
 
   bool hasLoaded = false;
@@ -107,9 +108,74 @@ class _DashboardTabState extends State<DashboardTab> {
     });
   }
 
+  int theft = 0;
+  int assault = 0;
+  int burglary = 0;
+  int fraud = 0;
+  int kidnapping = 0;
+  int rape = 0;
+  int robbery = 0;
+  int murder = 0;
+  int roadAccident = 0;
+  int others = 0;
+
+  getData1() {
+    FirebaseFirestore.instance
+        .collection('Reports')
+        .get()
+        .then((QuerySnapshot querySnapshot) async {
+      for (var doc in querySnapshot.docs) {
+        if (doc['type'] == 'Theft') {
+          setState(() {
+            theft++;
+          });
+        } else if (doc['type'] == 'Assault') {
+          setState(() {
+            assault++;
+          });
+        } else if (doc['type'] == 'Burglary') {
+          setState(() {
+            burglary++;
+          });
+        } else if (doc['type'] == 'Fraud') {
+          setState(() {
+            fraud++;
+          });
+        } else if (doc['type'] == 'Kidnapping') {
+          setState(() {
+            kidnapping++;
+          });
+        } else if (doc['type'] == 'Rape') {
+          setState(() {
+            rape++;
+          });
+        } else if (doc['type'] == 'Robbery') {
+          setState(() {
+            robbery++;
+          });
+        } else if (doc['type'] == 'Murder') {
+          setState(() {
+            murder++;
+          });
+        } else if (doc['type'] == 'Road Accident') {
+          setState(() {
+            roadAccident++;
+          });
+        } else if (doc['type'] == 'Others') {
+          setState(() {
+            others++;
+          });
+        }
+      }
+    }).then((value) {
+      setState(() {
+        hasLoaded = true;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(may);
     final List<SalesData> chartData = [
       SalesData(1, january.toDouble()),
       SalesData(2, february.toDouble()),
@@ -124,6 +190,19 @@ class _DashboardTabState extends State<DashboardTab> {
       SalesData(11, november.toDouble()),
       SalesData(12, december.toDouble()),
     ];
+
+    Map<String, double> dataMap = {
+      'Theft': theft.toDouble(),
+      'Assault': assault.toDouble(),
+      'Burglary': burglary.toDouble(),
+      'Fraud': fraud.toDouble(),
+      'Kidnapping': kidnapping.toDouble(),
+      'Rape': rape.toDouble(),
+      'Robbery': robbery.toDouble(),
+      'Murder': murder.toDouble(),
+      'Road Accident': roadAccident.toDouble(),
+      'Others': others.toDouble(),
+    };
     return hasLoaded
         ? Padding(
             padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
@@ -344,7 +423,7 @@ class _DashboardTabState extends State<DashboardTab> {
                         initialAngleInDegree: 0,
                         chartType: ChartType.ring,
                         ringStrokeWidth: 32,
-                        centerText: "HYBRID",
+                        centerText: "INCIDENTS",
                         legendOptions: const LegendOptions(
                           showLegendsInRow: false,
                           showLegends: true,
@@ -372,13 +451,6 @@ class _DashboardTabState extends State<DashboardTab> {
             child: CircularProgressIndicator(),
           );
   }
-
-  Map<String, double> dataMap = {
-    "Flutter": 5,
-    "React": 3,
-    "Xamarin": 2,
-    "Ionic": 2,
-  };
 }
 
 class SalesData {
