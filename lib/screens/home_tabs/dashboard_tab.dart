@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:sunspark_web/widgets/text_widget.dart';
@@ -40,15 +41,39 @@ class DashboardTab extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextRegular(
-                          text: 'Title here',
+                          text: 'Total Officers',
                           fontSize: 18,
                           color: Colors.black,
                         ),
-                        TextBold(
-                          text: '100',
-                          fontSize: 58,
-                          color: Colors.black,
-                        ),
+                        StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Officers')
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print(snapshot.error);
+                                return const Center(child: Text('Error'));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                print('waiting');
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  )),
+                                );
+                              }
+
+                              final data = snapshot.requireData;
+                              return TextBold(
+                                text: data.docs.length.toString(),
+                                fontSize: 58,
+                                color: Colors.black,
+                              );
+                            }),
                       ],
                     ),
                   ),
@@ -72,15 +97,39 @@ class DashboardTab extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextRegular(
-                          text: 'Title here',
+                          text: 'Total Users',
                           fontSize: 18,
                           color: Colors.black,
                         ),
-                        TextBold(
-                          text: '100',
-                          fontSize: 58,
-                          color: Colors.black,
-                        ),
+                        StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Users')
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print(snapshot.error);
+                                return const Center(child: Text('Error'));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                print('waiting');
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  )),
+                                );
+                              }
+
+                              final data = snapshot.requireData;
+                              return TextBold(
+                                text: data.docs.length.toString(),
+                                fontSize: 58,
+                                color: Colors.black,
+                              );
+                            }),
                       ],
                     ),
                   ),
@@ -109,50 +158,45 @@ class DashboardTab extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextRegular(
-                          text: 'Title here',
+                          text: 'Total Reports',
                           fontSize: 18,
                           color: Colors.black,
                         ),
-                        TextBold(
-                          text: '100',
-                          fontSize: 58,
-                          color: Colors.black,
-                        ),
+                        StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Reports')
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print(snapshot.error);
+                                return const Center(child: Text('Error'));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                print('waiting');
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  )),
+                                );
+                              }
+
+                              final data = snapshot.requireData;
+                              return TextBold(
+                                text: data.docs.length.toString(),
+                                fontSize: 58,
+                                color: Colors.black,
+                              );
+                            }),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(
                   width: 20,
-                ),
-                Container(
-                  height: 125,
-                  width: 275,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextRegular(
-                          text: 'Title here',
-                          fontSize: 18,
-                          color: Colors.black,
-                        ),
-                        TextBold(
-                          text: '100',
-                          fontSize: 58,
-                          color: Colors.black,
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               ],
             ),
