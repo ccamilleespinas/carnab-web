@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Carnab Admin Panel',
+      debugShowCheckedModeBanner: false,
       home: LoginScreen(),
     );
   }
