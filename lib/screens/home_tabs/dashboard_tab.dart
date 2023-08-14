@@ -211,114 +211,130 @@ class _DashboardTabState extends State<DashboardTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextBold(
+                        text: 'Admin Dashboard',
+                        fontSize: 24,
+                        color: Colors.black,
+                      ),
+                      const SizedBox(),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 125,
-                        width: 275,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
+                      Card(
+                        elevation: 5,
+                        child: Container(
+                          height: 125,
+                          width: 275,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              TextRegular(
-                                text: 'Total Officers',
-                                fontSize: 18,
-                                color: Colors.black,
-                              ),
-                              StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('Officers')
-                                      .snapshots(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                                    if (snapshot.hasError) {
-                                      print(snapshot.error);
-                                      return const Center(child: Text('Error'));
-                                    }
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      print('waiting');
-                                      return const Padding(
-                                        padding: EdgeInsets.only(top: 20),
-                                        child: Center(
-                                            child: CircularProgressIndicator(
-                                          color: Colors.black,
-                                        )),
-                                      );
-                                    }
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextRegular(
+                                  text: 'Total Officers',
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                ),
+                                StreamBuilder<QuerySnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('Officers')
+                                        .snapshots(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                                      if (snapshot.hasError) {
+                                        print(snapshot.error);
+                                        return const Center(
+                                            child: Text('Error'));
+                                      }
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        print('waiting');
+                                        return const Padding(
+                                          padding: EdgeInsets.only(top: 20),
+                                          child: Center(
+                                              child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                          )),
+                                        );
+                                      }
 
-                                    final data = snapshot.requireData;
-                                    return TextBold(
-                                      text: data.docs.length.toString(),
-                                      fontSize: 58,
-                                      color: Colors.black,
-                                    );
-                                  }),
-                            ],
+                                      final data = snapshot.requireData;
+                                      return TextBold(
+                                        text: data.docs.length.toString(),
+                                        fontSize: 58,
+                                        color: Colors.black,
+                                      );
+                                    }),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(
                         width: 20,
                       ),
-                      Container(
-                        height: 125,
-                        width: 275,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
+                      Card(
+                        elevation: 5,
+                        child: Container(
+                          height: 125,
+                          width: 275,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              TextRegular(
-                                text: 'Total Users',
-                                fontSize: 18,
-                                color: Colors.black,
-                              ),
-                              StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('Users')
-                                      .snapshots(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                                    if (snapshot.hasError) {
-                                      print(snapshot.error);
-                                      return const Center(child: Text('Error'));
-                                    }
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      print('waiting');
-                                      return const Padding(
-                                        padding: EdgeInsets.only(top: 20),
-                                        child: Center(
-                                            child: CircularProgressIndicator(
-                                          color: Colors.black,
-                                        )),
-                                      );
-                                    }
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextRegular(
+                                  text: 'Total Users',
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                ),
+                                StreamBuilder<QuerySnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('Users')
+                                        .snapshots(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                                      if (snapshot.hasError) {
+                                        print(snapshot.error);
+                                        return const Center(
+                                            child: Text('Error'));
+                                      }
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        print('waiting');
+                                        return const Padding(
+                                          padding: EdgeInsets.only(top: 20),
+                                          child: Center(
+                                              child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                          )),
+                                        );
+                                      }
 
-                                    final data = snapshot.requireData;
-                                    return TextBold(
-                                      text: data.docs.length.toString(),
-                                      fontSize: 58,
-                                      color: Colors.black,
-                                    );
-                                  }),
-                            ],
+                                      final data = snapshot.requireData;
+                                      return TextBold(
+                                        text: data.docs.length.toString(),
+                                        fontSize: 58,
+                                        color: Colors.black,
+                                      );
+                                    }),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -330,56 +346,57 @@ class _DashboardTabState extends State<DashboardTab> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 125,
-                        width: 275,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
+                      Card(
+                        elevation: 5,
+                        child: Container(
+                          height: 125,
+                          width: 275,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              TextRegular(
-                                text: 'Total Reports',
-                                fontSize: 18,
-                                color: Colors.black,
-                              ),
-                              StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('Reports')
-                                      .snapshots(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                                    if (snapshot.hasError) {
-                                      print(snapshot.error);
-                                      return const Center(child: Text('Error'));
-                                    }
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      print('waiting');
-                                      return const Padding(
-                                        padding: EdgeInsets.only(top: 20),
-                                        child: Center(
-                                            child: CircularProgressIndicator(
-                                          color: Colors.black,
-                                        )),
-                                      );
-                                    }
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextRegular(
+                                  text: 'Total Reports',
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                ),
+                                StreamBuilder<QuerySnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('Reports')
+                                        .snapshots(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                                      if (snapshot.hasError) {
+                                        print(snapshot.error);
+                                        return const Center(
+                                            child: Text('Error'));
+                                      }
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        print('waiting');
+                                        return const Padding(
+                                          padding: EdgeInsets.only(top: 20),
+                                          child: Center(
+                                              child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                          )),
+                                        );
+                                      }
 
-                                    final data = snapshot.requireData;
-                                    return TextBold(
-                                      text: data.docs.length.toString(),
-                                      fontSize: 58,
-                                      color: Colors.black,
-                                    );
-                                  }),
-                            ],
+                                      final data = snapshot.requireData;
+                                      return TextBold(
+                                        text: data.docs.length.toString(),
+                                        fontSize: 58,
+                                        color: Colors.black,
+                                      );
+                                    }),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -394,52 +411,61 @@ class _DashboardTabState extends State<DashboardTab> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 250,
-                        width: 500,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
+                      Card(
+                        elevation: 5,
+                        child: Container(
+                          height: 250,
+                          width: 500,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          borderRadius: BorderRadius.circular(10),
+                          child: SfCartesianChart(series: <ChartSeries>[
+                            // Renders line chart
+                            LineSeries<SalesData, int>(
+                                dataSource: chartData,
+                                xValueMapper: (SalesData sales, _) =>
+                                    sales.year,
+                                yValueMapper: (SalesData sales, _) =>
+                                    sales.sales)
+                          ]),
                         ),
-                        child: SfCartesianChart(series: <ChartSeries>[
-                          // Renders line chart
-                          LineSeries<SalesData, int>(
-                              dataSource: chartData,
-                              xValueMapper: (SalesData sales, _) => sales.year,
-                              yValueMapper: (SalesData sales, _) => sales.sales)
-                        ]),
                       ),
                       const SizedBox(
                         width: 40,
                       ),
-                      PieChart(
-                        dataMap: dataMap,
-                        animationDuration: const Duration(milliseconds: 800),
-                        chartLegendSpacing: 32,
-                        chartRadius: 150,
+                      Card(
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 25),
+                          child: PieChart(
+                            dataMap: dataMap,
+                            animationDuration:
+                                const Duration(milliseconds: 800),
+                            chartLegendSpacing: 32,
+                            chartRadius: 150,
 
-                        initialAngleInDegree: 0,
-                        chartType: ChartType.ring,
-                        ringStrokeWidth: 32,
-                        centerText: "INCIDENTS",
-                        legendOptions: const LegendOptions(
-                          showLegendsInRow: false,
-                          showLegends: true,
-                          legendTextStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            initialAngleInDegree: 0,
+                            chartType: ChartType.ring,
+                            ringStrokeWidth: 32,
+                            centerText: "INCIDENTS",
+                            legendOptions: const LegendOptions(
+                              showLegendsInRow: false,
+                              showLegends: true,
+                              legendTextStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            chartValuesOptions: const ChartValuesOptions(
+                              showChartValueBackground: true,
+                              showChartValues: true,
+                              showChartValuesInPercentage: false,
+                              showChartValuesOutside: false,
+                              decimalPlaces: 1,
+                            ),
+                            // gradientList: ---To add gradient colors---
+                            // emptyColorGradient: ---Empty Color gradient---
                           ),
                         ),
-                        chartValuesOptions: const ChartValuesOptions(
-                          showChartValueBackground: true,
-                          showChartValues: true,
-                          showChartValuesInPercentage: false,
-                          showChartValuesOutside: false,
-                          decimalPlaces: 1,
-                        ),
-                        // gradientList: ---To add gradient colors---
-                        // emptyColorGradient: ---Empty Color gradient---
                       )
                     ],
                   ),

@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final ageController = TextEditingController();
   final genderController = TextEditingController();
   final addressController = TextEditingController();
+  bool showMenu = false;
 
   @override
   Widget build(BuildContext context) {
@@ -115,157 +116,224 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
               })
           : null,
-      body: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
-            child: Container(
-              height: double.infinity,
-              width: 250,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 3),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Padding(
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            border: Border.all(
+              width: 2,
+              color: Colors.black,
+            ),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Row(
+            children: [
+              Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextBold(
-                      text: 'ADMIN',
-                      fontSize: 24,
-                      color: Colors.black,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Container(
-                        height: 400,
-                        width: 175,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 1),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    dashboardSelected = !dashboardSelected;
-                                    policeSelected = false;
-                                    citizenSelected = false;
-                                    reportsSelected = false;
-                                  });
-                                },
-                                child: dashboardSelected
-                                    ? TextBold(
-                                        text: 'Dashboard',
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                      )
-                                    : TextRegular(
-                                        text: 'Dashboard',
-                                        fontSize: 16,
-                                        color: Colors.grey,
+                child: showMenu
+                    ? Card(
+                        child: Container(
+                          height: double.infinity,
+                          width: 250,
+                          decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          showMenu = false;
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.menu,
                                       ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    policeSelected = !policeSelected;
-                                    dashboardSelected = false;
-                                    citizenSelected = false;
-                                    reportsSelected = false;
-                                  });
-                                },
-                                child: policeSelected
-                                    ? TextBold(
-                                        text: 'Police List',
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                      )
-                                    : TextRegular(
-                                        text: 'Police List',
-                                        fontSize: 16,
-                                        color: Colors.grey,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    TextBold(
+                                      text: 'ADMIN',
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 20),
+                                  child: Card(
+                                    elevation: 3,
+                                    child: Container(
+                                      height: 400,
+                                      width: 175,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        border: Border.all(
+                                            color: Colors.grey, width: 1),
+                                        borderRadius: BorderRadius.circular(5),
                                       ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    citizenSelected = !citizenSelected;
-                                    policeSelected = false;
-                                    dashboardSelected = false;
-                                    reportsSelected = false;
-                                  });
-                                },
-                                child: citizenSelected
-                                    ? TextBold(
-                                        text: 'Citizen List',
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                      )
-                                    : TextRegular(
-                                        text: 'Citizen List',
-                                        fontSize: 16,
-                                        color: Colors.grey,
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            20, 20, 10, 20),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  dashboardSelected =
+                                                      !dashboardSelected;
+                                                  policeSelected = false;
+                                                  citizenSelected = false;
+                                                  reportsSelected = false;
+                                                });
+                                              },
+                                              child: dashboardSelected
+                                                  ? TextBold(
+                                                      text: 'Dashboard',
+                                                      fontSize: 18,
+                                                      color: Colors.black,
+                                                    )
+                                                  : TextRegular(
+                                                      text: 'Dashboard',
+                                                      fontSize: 16,
+                                                      color: Colors.grey,
+                                                    ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  policeSelected =
+                                                      !policeSelected;
+                                                  dashboardSelected = false;
+                                                  citizenSelected = false;
+                                                  reportsSelected = false;
+                                                });
+                                              },
+                                              child: policeSelected
+                                                  ? TextBold(
+                                                      text: 'Police List',
+                                                      fontSize: 18,
+                                                      color: Colors.black,
+                                                    )
+                                                  : TextRegular(
+                                                      text: 'Police List',
+                                                      fontSize: 16,
+                                                      color: Colors.grey,
+                                                    ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  citizenSelected =
+                                                      !citizenSelected;
+                                                  policeSelected = false;
+                                                  dashboardSelected = false;
+                                                  reportsSelected = false;
+                                                });
+                                              },
+                                              child: citizenSelected
+                                                  ? TextBold(
+                                                      text: 'Citizen List',
+                                                      fontSize: 18,
+                                                      color: Colors.black,
+                                                    )
+                                                  : TextRegular(
+                                                      text: 'Citizen List',
+                                                      fontSize: 16,
+                                                      color: Colors.grey,
+                                                    ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  reportsSelected =
+                                                      !reportsSelected;
+                                                  policeSelected = false;
+                                                  dashboardSelected = false;
+                                                  citizenSelected = false;
+                                                });
+                                              },
+                                              child: reportsSelected
+                                                  ? TextBold(
+                                                      text: 'Reports List',
+                                                      fontSize: 18,
+                                                      color: Colors.black,
+                                                    )
+                                                  : TextRegular(
+                                                      text: 'Reports List',
+                                                      fontSize: 16,
+                                                      color: Colors.grey,
+                                                    ),
+                                            ),
+                                            const SizedBox(
+                                              height: 40,
+                                            ),
+                                            Image.asset(
+                                              'assets/images/carnab.png',
+                                              height: 75,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    reportsSelected = !reportsSelected;
-                                    policeSelected = false;
-                                    dashboardSelected = false;
-                                    citizenSelected = false;
-                                  });
-                                },
-                                child: reportsSelected
-                                    ? TextBold(
-                                        text: 'Reports List',
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                      )
-                                    : TextRegular(
-                                        text: 'Reports List',
-                                        fontSize: 16,
-                                        color: Colors.grey,
-                                      ),
-                              ),
-                            ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                showMenu = true;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.menu,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
               ),
-            ),
+              Expanded(
+                child: dashboardSelected
+                    ? const DashboardTab()
+                    : policeSelected
+                        ? const PoliceTab()
+                        : citizenSelected
+                            ? const CitizenTab()
+                            : const ReportsTab(),
+              ),
+            ],
           ),
-          Expanded(
-            child: dashboardSelected
-                ? DashboardTab()
-                : policeSelected
-                    ? const PoliceTab()
-                    : citizenSelected
-                        ? const CitizenTab()
-                        : const ReportsTab(),
-          ),
-        ],
+        ),
       ),
     );
   }
