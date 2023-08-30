@@ -51,61 +51,57 @@ class _DashboardTabState extends State<DashboardTab> {
         .get()
         .then((QuerySnapshot querySnapshot) async {
       for (var doc in querySnapshot.docs) {
-        if (doc['month'] == '1') {
+        if (doc['month'] == 1) {
           setState(() {
             january++;
           });
-        } else if (doc['month'] == '2') {
+        } else if (doc['month'] == 2) {
           setState(() {
             february++;
           });
-        } else if (doc['month'] == '3') {
+        } else if (doc['month'] == 3) {
           setState(() {
             march++;
           });
-        } else if (doc['month'] == '4') {
+        } else if (doc['month'] == 4) {
           setState(() {
             april++;
           });
-        } else if (doc['month'] == '5') {
+        } else if (doc['month'] == 5) {
           setState(() {
             may++;
           });
-        } else if (doc['month'] == '6') {
+        } else if (doc['month'] == 6) {
           setState(() {
             june++;
           });
-        } else if (doc['month'] == '7') {
+        } else if (doc['month'] == 7) {
           setState(() {
             july++;
           });
-        } else if (doc['month'] == '8') {
+        } else if (doc['month'] == 8) {
           setState(() {
             august++;
           });
-        } else if (doc['month'] == '9') {
+        } else if (doc['month'] == 9) {
           setState(() {
             september++;
           });
-        } else if (doc['month'] == '10') {
+        } else if (doc['month'] == 10) {
           setState(() {
             october++;
           });
-        } else if (doc['month'] == '11') {
+        } else if (doc['month'] == 11) {
           setState(() {
             november++;
           });
-        } else if (doc['month'] == '12') {
+        } else if (doc['month'] == 12) {
           setState(() {
             december++;
           });
         }
       }
-    }).then((value) {
-      setState(() {
-        hasLoaded = true;
-      });
-    });
+    }).then((value) {});
   }
 
   int theft = 0;
