@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sunspark_web/screens/auth/login_screen.dart';
 import 'package:sunspark_web/screens/home_tabs/citizen_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/dashboard_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/police_tab.dart';
@@ -287,6 +288,79 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       fontSize: 16,
                                                       color: Colors.grey,
                                                     ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AlertDialog(
+                                                          title: const Text(
+                                                            'Logout Confirmation',
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'QBold',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          content: const Text(
+                                                            'Are you sure you want to Logout?',
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'QRegular'),
+                                                          ),
+                                                          actions: <Widget>[
+                                                            MaterialButton(
+                                                              onPressed: () =>
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop(
+                                                                          true),
+                                                              child: const Text(
+                                                                'Close',
+                                                                style: TextStyle(
+                                                                    fontFamily:
+                                                                        'QRegular',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                            ),
+                                                            MaterialButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                await FirebaseAuth
+                                                                    .instance
+                                                                    .signOut();
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pushReplacement(MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginScreen()));
+                                                              },
+                                                              child: const Text(
+                                                                'Continue',
+                                                                style: TextStyle(
+                                                                    fontFamily:
+                                                                        'QRegular',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ));
+                                              },
+                                              child: TextRegular(
+                                                text: 'Logout',
+                                                fontSize: 16,
+                                                color: Colors.grey,
+                                              ),
                                             ),
                                             const SizedBox(
                                               height: 40,
