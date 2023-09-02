@@ -94,7 +94,9 @@ class _ReportsTabState extends State<ReportsTab> {
                         return Card(
                           child: ListTile(
                             title: TextBold(
-                                text: data.docs[index]['type'],
+                                text: data.docs[index]['type'] +
+                                    ' - ' +
+                                    data.docs[index]['status'],
                                 fontSize: 18,
                                 color: Colors.black),
                             subtitle: TextRegular(
