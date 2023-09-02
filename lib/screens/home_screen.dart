@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sunspark_web/screens/auth/login_screen.dart';
+import 'package:sunspark_web/screens/home_tabs/analytics_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/citizen_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/dashboard_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/police_tab.dart';
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool citizenSelected = false;
   bool reportsSelected = false;
+  bool analyticsSelected = false;
 
   final nameController = TextEditingController();
   final contactnumberController = TextEditingController();
@@ -200,6 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   policeSelected = false;
                                                   citizenSelected = false;
                                                   reportsSelected = false;
+                                                  analyticsSelected = false;
                                                 });
                                               },
                                               child: dashboardSelected
@@ -225,6 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   dashboardSelected = false;
                                                   citizenSelected = false;
                                                   reportsSelected = false;
+                                                  analyticsSelected = false;
                                                 });
                                               },
                                               child: policeSelected
@@ -250,6 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   policeSelected = false;
                                                   dashboardSelected = false;
                                                   reportsSelected = false;
+                                                  analyticsSelected = false;
                                                 });
                                               },
                                               child: citizenSelected
@@ -275,6 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   policeSelected = false;
                                                   dashboardSelected = false;
                                                   citizenSelected = false;
+                                                  analyticsSelected = false;
                                                 });
                                               },
                                               child: reportsSelected
@@ -285,6 +291,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     )
                                                   : TextRegular(
                                                       text: 'Reports List',
+                                                      fontSize: 16,
+                                                      color: Colors.grey,
+                                                    ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  reportsSelected = false;
+                                                  policeSelected = false;
+                                                  dashboardSelected = false;
+                                                  citizenSelected = false;
+                                                  analyticsSelected =
+                                                      !analyticsSelected;
+                                                });
+                                              },
+                                              child: analyticsSelected
+                                                  ? TextBold(
+                                                      text: 'Analytics',
+                                                      fontSize: 18,
+                                                      color: Colors.black,
+                                                    )
+                                                  : TextRegular(
+                                                      text: 'Analytics',
                                                       fontSize: 16,
                                                       color: Colors.grey,
                                                     ),
@@ -403,7 +435,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? const PoliceTab()
                         : citizenSelected
                             ? const CitizenTab()
-                            : const ReportsTab(),
+                            : reportsSelected
+                                ? const ReportsTab()
+                                : const AnalyticsTab(),
               ),
             ],
           ),
