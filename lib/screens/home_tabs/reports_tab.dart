@@ -93,6 +93,9 @@ class _ReportsTabState extends State<ReportsTab> {
                       itemBuilder: (context, index) {
                         return Card(
                           child: ListTile(
+                            onTap: () {
+                              showDetails(data.docs[index]);
+                            },
                             title: TextBold(
                                 text: data.docs[index]['type'] +
                                     ' - ' +
@@ -165,6 +168,79 @@ class _ReportsTabState extends State<ReportsTab> {
               }),
         ],
       )),
+    );
+  }
+
+  showDetails(data) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextBold(
+                  text: 'Witness Information',
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextRegular(
+                  text: 'Name: ${data['name']}',
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextRegular(
+                  text: 'Contact Number: ${data['contactNumber']}',
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextRegular(
+                  text: 'Address: ${data['address']}',
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextBold(
+                  text: 'Incident Information',
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextRegular(
+                  text: 'Incident Type: ${data['type']}',
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                const SizedBox(height: 20),
+                TextRegular(
+                  text: 'Statement: ${data['statement']}',
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

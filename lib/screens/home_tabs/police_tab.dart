@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sunspark_web/widgets/button_widget.dart';
+import 'package:sunspark_web/widgets/textfield_widget.dart';
 
 import '../../widgets/text_widget.dart';
 import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
@@ -93,6 +95,9 @@ class _PoliceTabState extends State<PoliceTab> {
                       itemBuilder: (context, index) {
                         return Card(
                           child: ListTile(
+                            onTap: () {
+                              showDetails(data.docs[index]);
+                            },
                             title: TextBold(
                                 text: data.docs[index]['name'],
                                 fontSize: 18,
@@ -163,6 +168,107 @@ class _PoliceTabState extends State<PoliceTab> {
               }),
         ],
       )),
+    );
+  }
+
+  final nameController = TextEditingController();
+  final ageController = TextEditingController();
+  final genderController = TextEditingController();
+  final addressController = TextEditingController();
+
+  showDetails(data) {
+    setState(() {
+      nameController.text = data['name'];
+      ageController.text = data['age'];
+      addressController.text = data['address'];
+      genderController.text = data['gender'];
+    });
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Image.asset(
+                    'assets/images/profile.png',
+                    height: 150,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFieldWidget(
+                    label: 'Name',
+                    controller: nameController,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  TextRegular(
+                      text: 'Full Name', fontSize: 12, color: Colors.grey),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFieldWidget(
+                    label: 'Age',
+                    controller: ageController,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  TextRegular(text: 'Age', fontSize: 12, color: Colors.grey),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFieldWidget(
+                    label: 'Gender',
+                    controller: genderController,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  TextRegular(text: 'Gender', fontSize: 12, color: Colors.grey),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFieldWidget(
+                    label: 'Address',
+                    controller: addressController,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  TextRegular(
+                      text: 'Address', fontSize: 12, color: Colors.grey),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ButtonWidget(
+                    label: 'Save',
+                    onPressed: () async {
+                      await FirebaseFirestore.instance
+                          .collection('Officers')
+                          .doc(data.id)
+                          .update({
+                        'name': nameController.text,
+                        'age': ageController.text,
+                        'gender': genderController.text,
+                        'address': addressController.text,
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
