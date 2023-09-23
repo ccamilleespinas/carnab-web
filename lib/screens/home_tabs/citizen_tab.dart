@@ -60,11 +60,11 @@ class _CitizenTabState extends State<CitizenTab> {
           ),
           StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
-                  .collection('Users')
-                  .where('name',
+                  .collection('Reports')
+                  .where('type',
                       isGreaterThanOrEqualTo:
                           toBeginningOfSentenceCase(nameSearched))
-                  .where('name',
+                  .where('type',
                       isLessThan: '${toBeginningOfSentenceCase(nameSearched)}z')
                   .snapshots(),
               builder: (BuildContext context,
@@ -93,25 +93,21 @@ class _CitizenTabState extends State<CitizenTab> {
                         return Card(
                           child: ListTile(
                             title: TextBold(
-                                text: data.docs[index]['name'],
+                                text: data.docs[index]['name'] +
+                                    ' - ' +
+                                    data.docs[index]['contactNumber'],
                                 fontSize: 18,
                                 color: Colors.black),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextRegular(
-                                    text: data.docs[index]['email'],
-                                    fontSize: 14,
-                                    color: Colors.grey),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                TextRegular(
-                                    text: data.docs[index]['address'],
-                                    fontSize: 14,
-                                    color: Colors.grey),
-                              ],
-                            ),
+                            subtitle: TextRegular(
+                                text: data.docs[index]['address'],
+                                fontSize: 14,
+                                color: Colors.grey),
+                            trailing: TextRegular(
+                                text: data.docs[index]['nabuaResident'] == 'Yes'
+                                    ? 'Nabua resident'
+                                    : 'Not a nabua resident',
+                                fontSize: 14,
+                                color: Colors.grey),
                           ),
                         );
                       },

@@ -415,15 +415,28 @@ class _DashboardTabState extends State<DashboardTab> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: SfCartesianChart(series: <ChartSeries>[
-                            // Renders line chart
-                            LineSeries<SalesData, int>(
+                          child: SfCartesianChart(
+                            // Primary X and Y axes configuration
+                            primaryXAxis: CategoryAxis(
+                              // Add labels to the X-axis
+                              title: AxisTitle(text: 'Months'), // X-axis label
+                            ),
+                            primaryYAxis: NumericAxis(
+                              // Add labels to the Y-axis
+                              title: AxisTitle(
+                                  text: 'Number of Reports'), // Y-axis label
+                            ),
+                            series: <ChartSeries>[
+                              // Renders line chart
+                              LineSeries<SalesData, int>(
                                 dataSource: chartData,
                                 xValueMapper: (SalesData sales, _) =>
                                     sales.year,
                                 yValueMapper: (SalesData sales, _) =>
-                                    sales.sales)
-                          ]),
+                                    sales.sales,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       const SizedBox(
