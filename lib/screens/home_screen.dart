@@ -285,12 +285,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                               },
                                               child: reportsSelected
                                                   ? TextBold(
-                                                      text: 'Reports List',
+                                                      text: 'Report Management',
                                                       fontSize: 18,
                                                       color: Colors.black,
                                                     )
                                                   : TextRegular(
-                                                      text: 'Reports List',
+                                                      text: 'Report Management',
                                                       fontSize: 16,
                                                       color: Colors.grey,
                                                     ),

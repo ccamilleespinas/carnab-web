@@ -301,7 +301,7 @@ class _DashboardTabState extends State<DashboardTab> {
                                 ),
                                 StreamBuilder<QuerySnapshot>(
                                     stream: FirebaseFirestore.instance
-                                        .collection('Users')
+                                        .collection('citizen_user')
                                         .snapshots(),
                                     builder: (BuildContext context,
                                         AsyncSnapshot<QuerySnapshot> snapshot) {

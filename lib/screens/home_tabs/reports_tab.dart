@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/reports_model.dart';
 import '../../widgets/text_widget.dart';
 import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
 
@@ -13,161 +16,411 @@ class ReportsTab extends StatefulWidget {
 
 class _ReportsTabState extends State<ReportsTab> {
   String nameSearched = '';
+  List<Report> reportsList = <Report>[];
+  List<Report> reportsListMasterList = <Report>[];
+
+  DateTime? initialDate;
+  DateTime? endDate;
+
+  getHeight(percent) {
+    var toDecimal = percent / 100;
+    return MediaQuery.of(context).size.height * toDecimal;
+  }
+
+  getWidth(percent) {
+    var toDecimal = percent / 100;
+    return MediaQuery.of(context).size.width * toDecimal;
+  }
+
+  getReports() async {
+    List data = [];
+    var result = await FirebaseFirestore.instance.collection('Reports').get();
+    var reports = result.docs;
+    for (var i = 0; i < reports.length; i++) {
+      Map mapData = reports[i].data();
+      if (mapData.containsKey('police_taked_action')) {
+        mapData['date_taken'] = reports[i]['date_taken'].toDate().toString();
+        mapData['police_name'] = reports[i]['police_name'];
+        mapData.remove('police_taked_action');
+      }
+      mapData['dateAndTime'] = reports[i]['dateAndTime'].toDate().toString();
+      mapData['dateTime'] = reports[i]['dateTime'].toDate().toString();
+      data.add(mapData);
+    }
+    setState(() {
+      reportsList = reportFromJson(jsonEncode(data));
+      reportsListMasterList = reportFromJson(jsonEncode(data));
+    });
+  }
+
+  searchReport({required String word}) async {
+    reportsList.clear();
+    if (word.isEmpty || word.trim() == "") {
+      reportsList.addAll(reportsListMasterList);
+    } else {
+      for (var i = 0; i < reportsListMasterList.length; i++) {
+        if (reportsListMasterList[i]
+                .name
+                .toLowerCase()
+                .toString()
+                .contains(word.toLowerCase().toString()) ||
+            reportsListMasterList[i]
+                .address
+                .toLowerCase()
+                .toString()
+                .contains(word.toLowerCase().toString()) ||
+            reportsListMasterList[i]
+                .type
+                .toLowerCase()
+                .toString()
+                .contains(word.toLowerCase().toString()) ||
+            reportsListMasterList[i]
+                .status
+                .toLowerCase()
+                .toString()
+                .contains(word.toLowerCase().toString())) {
+          reportsList.add(reportsListMasterList[i]);
+        }
+      }
+    }
+  }
+
+  filterData() async {
+    if (initialDate != null && endDate != null) {
+      reportsList.clear();
+      for (var i = 0; i < reportsListMasterList.length; i++) {
+        if (reportsListMasterList[i].dateAndTime.isAfter(initialDate!) &&
+            reportsListMasterList[i].dateAndTime.isBefore(endDate!)) {
+          reportsList.add(reportsListMasterList[i]);
+        }
+      }
+    }
+  }
+
+  getCalendarFrom() async {
+    DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now());
+
+    if (pickedDate != null) {
+      setState(() {
+        initialDate = pickedDate;
+        filterData();
+      });
+    }
+  }
+
+  getCalendarTo() async {
+    DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now());
+
+    if (pickedDate != null) {
+      setState(() {
+        endDate = pickedDate;
+        filterData();
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    getReports();
+    super.initState();
+  }
 
   final searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 50, 50, 20),
-      child: Container(
-          child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextBold(
-                text: 'Reports List',
-                fontSize: 24,
-                color: Colors.black,
-              ),
-              Container(
-                height: 50,
-                width: 300,
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                    ),
-                    borderRadius: BorderRadius.circular(5)),
-                child: TextFormField(
-                  onChanged: (value) {
-                    setState(() {
-                      nameSearched = value;
-                    });
-                  },
-                  decoration: const InputDecoration(
-                      hintText: 'Search Report',
-                      hintStyle: TextStyle(fontFamily: 'QRegular'),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      )),
-                  controller: searchController,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextBold(
+                  text: 'Reports Management',
+                  fontSize: 24,
+                  color: Colors.black,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('Reports')
-                  .where('type',
-                      isGreaterThanOrEqualTo:
-                          toBeginningOfSentenceCase(nameSearched))
-                  .where('type',
-                      isLessThan: '${toBeginningOfSentenceCase(nameSearched)}z')
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  print(snapshot.error);
-                  return const Center(child: Text('Error'));
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  print('waiting');
-                  return const Padding(
-                    padding: EdgeInsets.only(top: 50),
-                    child: Center(
-                        child: CircularProgressIndicator(
-                      color: Colors.black,
-                    )),
-                  );
-                }
-
-                final data = snapshot.requireData;
-                return Expanded(
-                  child: SizedBox(
-                    child: ListView.builder(
-                      itemCount: data.docs.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: ListTile(
-                            onTap: () {
-                              showDetails(data.docs[index]);
-                            },
-                            title: TextBold(
-                                text: data.docs[index]['type'] +
-                                    ' - ' +
-                                    data.docs[index]['status'],
-                                fontSize: 18,
-                                color: Colors.black),
-                            subtitle: TextRegular(
-                                text: data.docs[index]['name'],
-                                fontSize: 14,
-                                color: Colors.grey),
-                            trailing: IconButton(
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                          title: const Text(
-                                            'Delete Report Confirmation',
-                                            style: TextStyle(
-                                                fontFamily: 'QBold',
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          content: const Text(
-                                            'Are you sure you want to delete this report?',
-                                            style: TextStyle(
-                                                fontFamily: 'QRegular'),
-                                          ),
-                                          actions: <Widget>[
-                                            MaterialButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context)
-                                                      .pop(true),
-                                              child: const Text(
-                                                'Close',
-                                                style: TextStyle(
-                                                    fontFamily: 'QRegular',
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                            MaterialButton(
-                                              onPressed: () async {
-                                                await FirebaseFirestore.instance
-                                                    .collection('Reports')
-                                                    .doc(data.docs[index].id)
-                                                    .delete();
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text(
-                                                'Continue',
-                                                style: TextStyle(
-                                                    fontFamily: 'QRegular',
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          ],
-                                        ));
-                              },
-                              icon: const Icon(
-                                Icons.delete_outline_outlined,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                TextRegular(text: "From:", fontSize: 15, color: Colors.black),
+                InkWell(
+                  onTap: () {
+                    getCalendarFrom();
+                  },
+                  child: initialDate == null
+                      ? const Icon(Icons.calendar_month)
+                      : TextRegular(
+                          text: DateFormat.yMMMd().format(initialDate!),
+                          fontSize: 15,
+                          color: Colors.black),
+                ),
+                TextRegular(text: "To:", fontSize: 15, color: Colors.black),
+                InkWell(
+                  onTap: () {
+                    getCalendarTo();
+                  },
+                  child: endDate == null
+                      ? const Icon(Icons.calendar_month)
+                      : TextRegular(
+                          text: DateFormat.yMMMd().format(endDate!),
+                          fontSize: 15,
+                          color: Colors.black),
+                ),
+                Container(
+                  height: 50,
+                  width: 300,
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                      ),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: TextFormField(
+                    onChanged: (value) {
+                      setState(() {
+                        searchReport(word: value.toString());
+                      });
+                    },
+                    decoration: const InputDecoration(
+                        hintText: 'Search Report',
+                        hintStyle: TextStyle(fontFamily: 'QRegular'),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        )),
+                    controller: searchController,
                   ),
-                );
-              }),
-        ],
-      )),
+                ),
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        initialDate = null;
+                        endDate = null;
+                        reportsList.addAll(reportsListMasterList);
+                      });
+                    },
+                    icon: const Icon(Icons.clear))
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              child: Table(
+                textDirection: TextDirection.ltr,
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                border: TableBorder.all(width: 1, color: Colors.black),
+                children: [
+                  TableRow(children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: TextBold(
+                          text: "Name of the Reporter",
+                          fontSize: 15.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: TextBold(
+                          text: "Type of Incident",
+                          fontSize: 15.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: TextBold(
+                          text: "Date/Time",
+                          fontSize: 15.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: TextBold(
+                          text: "Location",
+                          fontSize: 15.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: TextBold(
+                          text: "Statement",
+                          fontSize: 15.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: TextBold(
+                          text: "Name of the Police that take action",
+                          fontSize: 15.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: TextBold(
+                          text: "Status",
+                          fontSize: 15.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: TextBold(
+                          text: "Actions",
+                          fontSize: 15.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ]),
+                  TableRow(children: [
+                    SizedBox(
+                      height: getHeight(3),
+                    ),
+                    SizedBox(
+                      height: getHeight(3),
+                    ),
+                    SizedBox(
+                      height: getHeight(3),
+                    ),
+                    SizedBox(
+                      height: getHeight(3),
+                    ),
+                    SizedBox(
+                      height: getHeight(3),
+                    ),
+                    SizedBox(
+                      height: getHeight(3),
+                    ),
+                    SizedBox(
+                      height: getHeight(3),
+                    ),
+                    SizedBox(
+                      height: getHeight(3),
+                    ),
+                  ]),
+                  for (var i = 0; i < reportsList.length; i++) ...[
+                    TableRow(children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          reportsList[i].name,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 15),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          reportsList[i].type,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "${DateFormat.yMMMd().format(reportsList[i].dateTime)}  ${DateFormat.jm().format(reportsList[i].dateTime)}",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 15),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "${reportsList[i].address} - (${reportsList[i].lat}, ${reportsList[i].long})",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 15),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          reportsList[i].statement,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 15),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          reportsList[i].policeName == null
+                              ? ""
+                              : reportsList[i].policeName!,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 15),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          reportsList[i].status,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: reportsList[i].status == "Unresolved"
+                                  ? Colors.red
+                                  : reportsList[i].status == "Processing"
+                                      ? Colors.orange
+                                      : Colors.green),
+                        ),
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: () async {
+                              await FirebaseFirestore.instance
+                                  .collection('Reports')
+                                  .doc(reportsList[i].id)
+                                  .delete();
+                            },
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                          )),
+                    ]),
+                  ]
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 

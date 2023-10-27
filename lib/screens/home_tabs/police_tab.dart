@@ -88,6 +88,7 @@ class _PoliceTabState extends State<PoliceTab> {
                 }
 
                 final data = snapshot.requireData;
+
                 return Expanded(
                   child: SizedBox(
                     child: ListView.builder(
@@ -95,71 +96,42 @@ class _PoliceTabState extends State<PoliceTab> {
                       itemBuilder: (context, index) {
                         return Card(
                           child: ListTile(
-                            onTap: () {
-                              showDetails(data.docs[index]);
-                            },
-                            title: TextBold(
-                                text: data.docs[index]['name'],
-                                fontSize: 18,
-                                color: Colors.black),
-                            subtitle: TextRegular(
-                                text: data.docs[index]['contactnumber'],
-                                fontSize: 14,
-                                color: Colors.grey),
-                            trailing: IconButton(
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                          title: const Text(
-                                            'Delete Officer Confirmation',
-                                            style: TextStyle(
-                                                fontFamily: 'QBold',
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          content: const Text(
-                                            'Are you sure you want to delete this account?',
-                                            style: TextStyle(
-                                                fontFamily: 'QRegular'),
-                                          ),
-                                          actions: <Widget>[
-                                            MaterialButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context)
-                                                      .pop(true),
-                                              child: const Text(
-                                                'Close',
-                                                style: TextStyle(
-                                                    fontFamily: 'QRegular',
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                            MaterialButton(
-                                              onPressed: () async {
-                                                await FirebaseFirestore.instance
-                                                    .collection('Officers')
-                                                    .doc(data.docs[index].id)
-                                                    .delete();
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text(
-                                                'Continue',
-                                                style: TextStyle(
-                                                    fontFamily: 'QRegular',
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          ],
-                                        ));
+                              onTap: () {
+                                showDetails(data.docs[index]);
                               },
-                              icon: const Icon(
-                                Icons.delete_outline_outlined,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
+                              title: TextBold(
+                                  text: data.docs[index]['name'],
+                                  fontSize: 18,
+                                  color: Colors.black),
+                              subtitle: TextRegular(
+                                  text: data.docs[index]['contactnumber'],
+                                  fontSize: 14,
+                                  color: Colors.grey),
+                              trailing: data.docs[index]['status'] == 'Active'
+                                  ? InkWell(
+                                      onTap: () async {
+                                        await FirebaseFirestore.instance
+                                            .collection('Officers')
+                                            .doc(data.docs[index]['id'])
+                                            .update({"status": "inActive"});
+                                      },
+                                      child: const Icon(
+                                        Icons.person,
+                                        color: Colors.green,
+                                      ),
+                                    )
+                                  : InkWell(
+                                      onTap: () async {
+                                        await FirebaseFirestore.instance
+                                            .collection('Officers')
+                                            .doc(data.docs[index]['id'])
+                                            .update({"status": "Active"});
+                                      },
+                                      child: const Icon(
+                                        Icons.person_off,
+                                        color: Colors.red,
+                                      ),
+                                    )),
                         );
                       },
                     ),
@@ -175,6 +147,7 @@ class _PoliceTabState extends State<PoliceTab> {
   final ageController = TextEditingController();
   final genderController = TextEditingController();
   final addressController = TextEditingController();
+  final contactNumberController = TextEditingController();
 
   showDetails(data) {
     setState(() {
@@ -182,6 +155,7 @@ class _PoliceTabState extends State<PoliceTab> {
       ageController.text = data['age'];
       addressController.text = data['address'];
       genderController.text = data['gender'];
+      contactNumberController.text = data['contactnumber'];
     });
     showDialog(
       context: context,
@@ -238,6 +212,18 @@ class _PoliceTabState extends State<PoliceTab> {
                     height: 20,
                   ),
                   TextFieldWidget(
+                    label: 'Contact no.',
+                    controller: contactNumberController,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  TextRegular(
+                      text: 'Contact no.', fontSize: 12, color: Colors.grey),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFieldWidget(
                     label: 'Address',
                     controller: addressController,
                   ),
@@ -260,6 +246,7 @@ class _PoliceTabState extends State<PoliceTab> {
                         'age': ageController.text,
                         'gender': genderController.text,
                         'address': addressController.text,
+                        'contactnumber': contactNumberController.text
                       });
                     },
                   ),
