@@ -21,7 +21,7 @@ class _PoliceTabState extends State<PoliceTab> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 50, 50, 20),
-      child: Container(
+      child: SizedBox(
           child: Column(
         children: [
           Row(
@@ -97,7 +97,9 @@ class _PoliceTabState extends State<PoliceTab> {
                         return Card(
                           child: ListTile(
                               onTap: () {
-                                showDetails(data.docs[index]);
+                                showDetails(
+                                    data: data.docs[index].data() as Map,
+                                    id: data.docs[index].id);
                               },
                               title: TextBold(
                                   text: data.docs[index]['name'],
@@ -148,109 +150,177 @@ class _PoliceTabState extends State<PoliceTab> {
   final genderController = TextEditingController();
   final addressController = TextEditingController();
   final contactNumberController = TextEditingController();
+  final birthDateController = TextEditingController();
+  DateTime birthdate = DateTime.now();
 
-  showDetails(data) {
+  showDetails({required Map data, required String id}) {
+    birthDateController.clear();
     setState(() {
-      nameController.text = data['name'];
-      ageController.text = data['age'];
-      addressController.text = data['address'];
-      genderController.text = data['gender'];
-      contactNumberController.text = data['contactnumber'];
+      nameController.text = data['name'] ?? "";
+      ageController.text = data['age'] ?? "";
+      addressController.text = data['address'] ?? "";
+      genderController.text = data['gender'] ?? "";
+      contactNumberController.text = data['contactnumber'] ?? "";
+      if (data.containsKey("birthdate")) {
+        birthDateController.text = DateFormat.yMMMMd()
+            .format(DateTime.parse(data['birthdate'].toDate().toString()));
+        birthdate = data['birthdate'].toDate();
+      }
     });
     showDialog(
       context: context,
       builder: (context) {
         return Dialog(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Image.asset(
-                    'assets/images/profile.png',
-                    height: 150,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFieldWidget(
-                    label: 'Name',
-                    controller: nameController,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  TextRegular(
-                      text: 'Full Name', fontSize: 12, color: Colors.grey),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFieldWidget(
-                    label: 'Age',
-                    controller: ageController,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  TextRegular(text: 'Age', fontSize: 12, color: Colors.grey),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFieldWidget(
-                    label: 'Gender',
-                    controller: genderController,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  TextRegular(text: 'Gender', fontSize: 12, color: Colors.grey),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFieldWidget(
-                    label: 'Contact no.',
-                    controller: contactNumberController,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  TextRegular(
-                      text: 'Contact no.', fontSize: 12, color: Colors.grey),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFieldWidget(
-                    label: 'Address',
-                    controller: addressController,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  TextRegular(
-                      text: 'Address', fontSize: 12, color: Colors.grey),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ButtonWidget(
-                    label: 'Save',
-                    onPressed: () async {
-                      await FirebaseFirestore.instance
-                          .collection('Officers')
-                          .doc(data.id)
-                          .update({
-                        'name': nameController.text,
-                        'age': ageController.text,
-                        'gender': genderController.text,
-                        'address': addressController.text,
-                        'contactnumber': contactNumberController.text
-                      });
-                    },
-                  ),
-                ],
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.3,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Image.asset(
+                      'assets/images/profile.png',
+                      height: 150,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFieldWidget(
+                      label: 'Name',
+                      controller: nameController,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    TextRegular(
+                        text: 'Full Name', fontSize: 12, color: Colors.grey),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.07,
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black,
+                                ),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: TextField(
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              controller: birthDateController,
+                              enabled: false,
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.only(
+                                      left: MediaQuery.of(context).size.width *
+                                          0.01),
+                                  border: InputBorder.none),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                            onTap: () async {
+                              var datepick = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900, 1, 1),
+                                  lastDate: DateTime.now());
+
+                              if (datepick != null) {
+                                Duration difference =
+                                    DateTime.now().difference(datepick);
+                                int age = (difference.inDays / 365).floor();
+                                ageController.text = age.toString();
+                                birthDateController.text =
+                                    DateFormat.yMMMMd().format(datepick);
+                                birthdate = datepick;
+                              }
+                            },
+                            child: const Icon(Icons.calendar_month))
+                      ],
+                    ),
+                    TextRegular(
+                        text: "Birth Date", fontSize: 12, color: Colors.grey),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    TextFieldWidget(
+                      label: '',
+                      controller: ageController,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    TextRegular(text: 'Age', fontSize: 12, color: Colors.grey),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFieldWidget(
+                      label: 'Gender',
+                      controller: genderController,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    TextRegular(
+                        text: 'Gender', fontSize: 12, color: Colors.grey),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFieldWidget(
+                      label: 'Contact no.',
+                      controller: contactNumberController,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    TextRegular(
+                        text: 'Contact no.', fontSize: 12, color: Colors.grey),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFieldWidget(
+                      label: 'Address',
+                      controller: addressController,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    TextRegular(
+                        text: 'Address', fontSize: 12, color: Colors.grey),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ButtonWidget(
+                      label: 'Save',
+                      onPressed: () async {
+                        await FirebaseFirestore.instance
+                            .collection('Officers')
+                            .doc(id)
+                            .update({
+                          'birthdate': birthdate,
+                          'name': nameController.text,
+                          'age': ageController.text,
+                          'gender': genderController.text,
+                          'address': addressController.text,
+                          'contactnumber': contactNumberController.text
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

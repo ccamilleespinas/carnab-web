@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-Future addOfficer(name, username, contactnumber, age, gender, address) async {
+Future addOfficer(
+    birthdate, name, email, contactnumber, age, gender, address) async {
   final docUser = FirebaseFirestore.instance
       .collection('Officers')
       .doc(FirebaseAuth.instance.currentUser!.uid);
 
   final json = {
+    'birthdate': birthdate,
     'name': name,
-    'email': username,
+    'email': email,
     'contactnumber': contactnumber,
     'age': age,
     'gender': gender,

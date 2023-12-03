@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sunspark_web/screens/auth/login_screen.dart';
 import 'package:sunspark_web/screens/home_tabs/analytics_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/citizen_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/dashboard_tab.dart';
+import 'package:sunspark_web/screens/home_tabs/logs_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/police_tab.dart';
 import 'package:sunspark_web/screens/home_tabs/reports_tab.dart';
 import 'package:sunspark_web/services/add_officer.dart';
@@ -27,14 +29,17 @@ class _HomeScreenState extends State<HomeScreen> {
   bool citizenSelected = false;
   bool reportsSelected = false;
   bool analyticsSelected = false;
-
+  bool logsSelected = false;
+  DateTime birthdate = DateTime.now();
   final nameController = TextEditingController();
   final contactnumberController = TextEditingController();
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final ageController = TextEditingController();
   final genderController = TextEditingController();
   final addressController = TextEditingController();
+  final birthDateController = TextEditingController();
+
   bool showMenu = false;
 
   @override
@@ -67,8 +72,87 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 10,
                               ),
                               TextFieldWidget(
+                                  label: 'Email', controller: emailController),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextFieldWidget(
+                                  isObscure: true,
+                                  isPassword: true,
+                                  label: 'Password',
+                                  controller: passwordController),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextFieldWidget(
                                   label: 'Contact Number',
                                   controller: contactnumberController),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: TextRegular(
+                                    text: "Birth Date",
+                                    fontSize: 12,
+                                    color: Colors.black),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.black,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: TextField(
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                        controller: birthDateController,
+                                        enabled: false,
+                                        decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.only(
+                                                left: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.01),
+                                            border: InputBorder.none),
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                      onTap: () async {
+                                        var datepick = await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(1900, 1, 1),
+                                            lastDate: DateTime.now());
+
+                                        if (datepick != null) {
+                                          Duration difference = DateTime.now()
+                                              .difference(datepick);
+                                          int age =
+                                              (difference.inDays / 365).floor();
+                                          ageController.text = age.toString();
+                                          birthDateController.text =
+                                              DateFormat.yMMMMd()
+                                                  .format(datepick);
+                                          birthdate = datepick;
+                                        }
+                                      },
+                                      child: const Icon(Icons.calendar_month))
+                                ],
+                              ),
                               const SizedBox(
                                 height: 10,
                               ),
@@ -86,20 +170,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               TextFieldWidget(
                                   label: 'Address',
                                   controller: addressController),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              TextFieldWidget(
-                                  label: 'Username',
-                                  controller: usernameController),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              TextFieldWidget(
-                                  isObscure: true,
-                                  isPassword: true,
-                                  label: 'Password',
-                                  controller: passwordController),
                             ],
                           ),
                         ),
@@ -179,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Card(
                                     elevation: 3,
                                     child: Container(
-                                      height: 400,
+                                      height: 430,
                                       width: 175,
                                       decoration: BoxDecoration(
                                         color: Colors.grey[200],
@@ -203,6 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   citizenSelected = false;
                                                   reportsSelected = false;
                                                   analyticsSelected = false;
+                                                  logsSelected = false;
                                                 });
                                               },
                                               child: dashboardSelected
@@ -229,6 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   citizenSelected = false;
                                                   reportsSelected = false;
                                                   analyticsSelected = false;
+                                                  logsSelected = false;
                                                 });
                                               },
                                               child: policeSelected
@@ -255,6 +327,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   dashboardSelected = false;
                                                   reportsSelected = false;
                                                   analyticsSelected = false;
+                                                  logsSelected = false;
                                                 });
                                               },
                                               child: citizenSelected
@@ -281,6 +354,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   dashboardSelected = false;
                                                   citizenSelected = false;
                                                   analyticsSelected = false;
+                                                  logsSelected = false;
                                                 });
                                               },
                                               child: reportsSelected
@@ -307,6 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   citizenSelected = false;
                                                   analyticsSelected =
                                                       !analyticsSelected;
+                                                  logsSelected = false;
                                                 });
                                               },
                                               child: analyticsSelected
@@ -317,6 +392,33 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     )
                                                   : TextRegular(
                                                       text: 'Analytics',
+                                                      fontSize: 16,
+                                                      color: Colors.grey,
+                                                    ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  dashboardSelected =
+                                                      !dashboardSelected;
+                                                  policeSelected = false;
+                                                  citizenSelected = false;
+                                                  reportsSelected = false;
+                                                  analyticsSelected = false;
+                                                  logsSelected = true;
+                                                });
+                                              },
+                                              child: logsSelected
+                                                  ? TextBold(
+                                                      text: 'Logs',
+                                                      fontSize: 18,
+                                                      color: Colors.black,
+                                                    )
+                                                  : TextRegular(
+                                                      text: 'Logs',
                                                       fontSize: 16,
                                                       color: Colors.grey,
                                                     ),
@@ -395,7 +497,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                             ),
                                             const SizedBox(
-                                              height: 40,
+                                              height: 20,
                                             ),
                                             Image.asset(
                                               'assets/images/carnab.png',
@@ -437,7 +539,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             ? const CitizenTab()
                             : reportsSelected
                                 ? const ReportsTab()
-                                : const AnalyticsTab(),
+                                : logsSelected
+                                    ? const LogsTab()
+                                    : const AnalyticsTab(),
               ),
             ],
           ),
@@ -449,12 +553,12 @@ class _HomeScreenState extends State<HomeScreen> {
   register(context) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: '${usernameController.text}@carnab.com',
-          password: passwordController.text);
+          email: emailController.text, password: passwordController.text);
 
       addOfficer(
+          birthdate,
           nameController.text,
-          usernameController.text,
+          emailController.text,
           contactnumberController.text,
           ageController.text,
           genderController.text,

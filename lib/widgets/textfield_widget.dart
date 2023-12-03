@@ -11,12 +11,14 @@ class TextFieldWidget extends StatefulWidget {
   final int? maxLine;
   final TextInputType? inputType;
   final bool? isPassword;
+  final bool isEnabled;
 
   TextFieldWidget(
       {super.key,
       required this.label,
       this.hint = '',
       required this.controller,
+      this.isEnabled = true,
       this.isObscure = false,
       this.width = 300,
       this.height = 40,
@@ -49,6 +51,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           child: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child: TextFormField(
+              enabled: widget.isEnabled,
               keyboardType: widget.inputType,
               decoration: InputDecoration(
                 suffixIcon: widget.isPassword!
