@@ -173,18 +173,18 @@ class _DashboardTabState extends State<DashboardTab> {
   @override
   Widget build(BuildContext context) {
     final List<SalesData> chartData = [
-      SalesData(1, january.toDouble()),
-      SalesData(2, february.toDouble()),
-      SalesData(3, march.toDouble()),
-      SalesData(4, april.toDouble()),
-      SalesData(5, may.toDouble()),
-      SalesData(6, june.toDouble()),
-      SalesData(7, july.toDouble()),
-      SalesData(8, august.toDouble()),
-      SalesData(9, september.toDouble()),
-      SalesData(10, october.toDouble()),
-      SalesData(11, november.toDouble()),
-      SalesData(12, december.toDouble()),
+      SalesData("Jan", january.toDouble()),
+      SalesData("Feb", february.toDouble()),
+      SalesData("Mar", march.toDouble()),
+      SalesData("Apr", april.toDouble()),
+      SalesData("May", may.toDouble()),
+      SalesData("Jun", june.toDouble()),
+      SalesData("Jul", july.toDouble()),
+      SalesData("Aug", august.toDouble()),
+      SalesData("Sept", september.toDouble()),
+      SalesData("Oct", october.toDouble()),
+      SalesData("Nov", november.toDouble()),
+      SalesData("Dec", december.toDouble()),
     ];
 
     Map<String, double> dataMap = {
@@ -419,7 +419,10 @@ class _DashboardTabState extends State<DashboardTab> {
                             // Primary X and Y axes configuration
                             primaryXAxis: CategoryAxis(
                               // Add labels to the X-axis
-                              title: AxisTitle(text: 'Months'), // X-axis label
+                              title: AxisTitle(
+                                  text: DateTime.now()
+                                      .year
+                                      .toString()), // X-axis label
                             ),
                             primaryYAxis: NumericAxis(
                               // Add labels to the Y-axis
@@ -428,7 +431,7 @@ class _DashboardTabState extends State<DashboardTab> {
                             ),
                             series: <ChartSeries>[
                               // Renders line chart
-                              LineSeries<SalesData, int>(
+                              LineSeries<SalesData, String>(
                                 dataSource: chartData,
                                 xValueMapper: (SalesData sales, _) =>
                                     sales.year,
@@ -490,6 +493,6 @@ class _DashboardTabState extends State<DashboardTab> {
 
 class SalesData {
   SalesData(this.year, this.sales);
-  final int year;
+  final String year;
   final double sales;
 }

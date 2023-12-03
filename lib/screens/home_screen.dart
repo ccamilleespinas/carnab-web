@@ -386,12 +386,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                               },
                                               child: analyticsSelected
                                                   ? TextBold(
-                                                      text: 'Analytics',
+                                                      text: 'Crime Hotspot',
                                                       fontSize: 18,
                                                       color: Colors.black,
                                                     )
                                                   : TextRegular(
-                                                      text: 'Analytics',
+                                                      text: 'Crime Hotspot',
                                                       fontSize: 16,
                                                       color: Colors.grey,
                                                     ),
