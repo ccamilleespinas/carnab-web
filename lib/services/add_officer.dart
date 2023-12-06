@@ -25,4 +25,11 @@ Future addOfficer(
   };
 
   await docUser.set(json);
+  await FirebaseFirestore.instance.collection('logs').add({
+    "dateTime": Timestamp.now(),
+    "username": "Admin",
+    "userid": "Admin",
+    "userDocReference": "",
+    "logMessage": "Created an account for name"
+  });
 }

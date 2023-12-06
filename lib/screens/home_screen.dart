@@ -402,8 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             TextButton(
                                               onPressed: () {
                                                 setState(() {
-                                                  dashboardSelected =
-                                                      !dashboardSelected;
+                                                  dashboardSelected = false;
                                                   policeSelected = false;
                                                   citizenSelected = false;
                                                   reportsSelected = false;
@@ -554,6 +553,8 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
+
+      
 
       addOfficer(
           birthdate,

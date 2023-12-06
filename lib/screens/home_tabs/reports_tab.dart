@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
+import 'package:pdf/pdf.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:pdf/widgets.dart' as pw;
 import '../../model/reports_model.dart';
 import '../../widgets/text_widget.dart';
 import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
@@ -34,7 +37,10 @@ class _ReportsTabState extends State<ReportsTab> {
 
   getReports() async {
     List data = [];
-    var result = await FirebaseFirestore.instance.collection('Reports').get();
+    var result = await FirebaseFirestore.instance
+        .collection('Reports')
+        .orderBy('dateTime', descending: true)
+        .get();
     var reports = result.docs;
     for (var i = 0; i < reports.length; i++) {
       Map mapData = reports[i].data();
@@ -58,28 +64,38 @@ class _ReportsTabState extends State<ReportsTab> {
     if (word.isEmpty || word.trim() == "") {
       reportsList.addAll(reportsListMasterList);
     } else {
-      for (var i = 0; i < reportsListMasterList.length; i++) {
-        if (reportsListMasterList[i]
-                .name
-                .toLowerCase()
-                .toString()
-                .contains(word.toLowerCase().toString()) ||
-            reportsListMasterList[i]
-                .address
-                .toLowerCase()
-                .toString()
-                .contains(word.toLowerCase().toString()) ||
-            reportsListMasterList[i]
-                .type
-                .toLowerCase()
-                .toString()
-                .contains(word.toLowerCase().toString()) ||
-            reportsListMasterList[i]
-                .status
-                .toLowerCase()
-                .toString()
-                .contains(word.toLowerCase().toString())) {
-          reportsList.add(reportsListMasterList[i]);
+      if (word.toLowerCase().toString() == "resolved" ||
+          word.toLowerCase().toString() == "resolved") {
+        for (var i = 0; i < reportsListMasterList.length; i++) {
+          if (reportsListMasterList[i].status.toLowerCase().toString() ==
+              word.toLowerCase().toString()) {
+            reportsList.add(reportsListMasterList[i]);
+          }
+        }
+      } else {
+        for (var i = 0; i < reportsListMasterList.length; i++) {
+          if (reportsListMasterList[i]
+                  .name
+                  .toLowerCase()
+                  .toString()
+                  .contains(word.toLowerCase().toString()) ||
+              reportsListMasterList[i]
+                  .address
+                  .toLowerCase()
+                  .toString()
+                  .contains(word.toLowerCase().toString()) ||
+              reportsListMasterList[i]
+                  .type
+                  .toLowerCase()
+                  .toString()
+                  .contains(word.toLowerCase().toString()) ||
+              reportsListMasterList[i]
+                  .status
+                  .toLowerCase()
+                  .toString()
+                  .contains(word.toLowerCase().toString())) {
+            reportsList.add(reportsListMasterList[i]);
+          }
         }
       }
     }
@@ -125,6 +141,105 @@ class _ReportsTabState extends State<ReportsTab> {
         filterData();
       });
     }
+  }
+
+  Future<void> createPdf() async {
+    final Uint8List headerImage =
+        (await rootBundle.load("assets/images/carnab.png"))
+            .buffer
+            .asUint8List();
+
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.MultiPage(
+        maxPages: 100,
+        pageFormat: PdfPageFormat.a4,
+        // build: (pw.Context context) => widget,
+        build: (pw.Context context) {
+          return <pw.Widget>[
+            pw.Row(children: [
+              pw.Container(
+                height: 50,
+                width: 50,
+                child: pw.Image(
+                  pw.MemoryImage(
+                    headerImage,
+                  ),
+                  fit: pw.BoxFit.cover,
+                ),
+              ),
+              pw.SizedBox(width: 4.0),
+              pw.Text("CARNab - Crime and Accident Reporting System of Nabua",
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                  )),
+            ]),
+            pw.Divider(),
+            pw.SizedBox(height: 24.0),
+            pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text(
+                    "Report",
+                  ),
+                  pw.Text(DateFormat.yMMMMd().format(DateTime.now())),
+                ]),
+            pw.Table(border: pw.TableBorder.all(), children: [
+              // Header row
+              pw.TableRow(children: [
+                pw.Center(child: pw.Text("Reporter")),
+                pw.Center(child: pw.Text("Incident")),
+                pw.Center(child: pw.Text("Date & Time")),
+                pw.Center(child: pw.Text("Location")),
+                pw.Center(child: pw.Text("Police taked action")),
+                pw.Center(child: pw.Text("Status")),
+              ]),
+              //  Data rows
+              for (var i = 0; i < reportsList.length; i++)
+                pw.TableRow(children: [
+                  pw.Center(child: pw.Text(reportsList[i].name.toString())),
+                  pw.Center(child: pw.Text(reportsList[i].type.toString())),
+                  pw.Center(
+                      child: pw.Text(
+                    ("${DateFormat.yMMMd().format(reportsList[i].dateTime)}  ${DateFormat.jm().format(reportsList[i].dateTime)}")
+                        .toString(),
+                  )),
+                  pw.Center(
+                      child: pw.Text(
+                    ("${reportsList[i].address} ").toString(),
+                  )),
+                  pw.Center(
+                      child: pw.Text(
+                    reportsList[i].policeName == null
+                        ? "".toString()
+                        : reportsList[i].policeName!.toString(),
+                  )),
+                  pw.Center(child: pw.Text(reportsList[i].status.toString())),
+                ]),
+
+              // // Data rows
+            ]),
+          ];
+        },
+      ),
+    );
+
+    var savedFile = await pdf.save();
+    List<int> fileInts = List.from(savedFile);
+
+    html.AnchorElement(
+        href:
+            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(fileInts)}")
+      ..setAttribute("download", "${DateTime.now().millisecondsSinceEpoch}.pdf")
+      ..click();
+    await FirebaseFirestore.instance.collection('logs').add({
+      "dateTime": Timestamp.now(),
+      "username": "Admin",
+      "userid": "Admin",
+      "userDocReference": "",
+      "logMessage": "Generated a report for report management"
+    });
   }
 
   @override
@@ -205,7 +320,12 @@ class _ReportsTabState extends State<ReportsTab> {
                         reportsList.addAll(reportsListMasterList);
                       });
                     },
-                    icon: const Icon(Icons.clear))
+                    icon: const Icon(Icons.clear)),
+                IconButton(
+                    onPressed: () {
+                      createPdf();
+                    },
+                    icon: const Icon(Icons.file_download_sharp))
               ],
             ),
             const SizedBox(
@@ -407,6 +527,16 @@ class _ReportsTabState extends State<ReportsTab> {
                                   .collection('Reports')
                                   .doc(reportsList[i].id)
                                   .delete();
+                              await FirebaseFirestore.instance
+                                  .collection('logs')
+                                  .add({
+                                "dateTime": Timestamp.now(),
+                                "username": "Admin",
+                                "userid": "Admin",
+                                "userDocReference": "",
+                                "logMessage":
+                                    "Deleted a report with an id of ${reportsList[i].id}"
+                              });
                             },
                             child: const Icon(
                               Icons.delete,

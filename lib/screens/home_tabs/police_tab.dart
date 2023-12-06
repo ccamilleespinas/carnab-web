@@ -17,6 +17,17 @@ class _PoliceTabState extends State<PoliceTab> {
   String nameSearched = '';
 
   final searchController = TextEditingController();
+
+  createLogs({required String log}) async {
+    await FirebaseFirestore.instance.collection('logs').add({
+      "dateTime": Timestamp.now(),
+      "username": "Admin",
+      "userid": "Admin",
+      "userDocReference": "",
+      "logMessage": log
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -116,6 +127,9 @@ class _PoliceTabState extends State<PoliceTab> {
                                             .collection('Officers')
                                             .doc(data.docs[index]['id'])
                                             .update({"status": "inActive"});
+                                        createLogs(
+                                            log:
+                                                "Police officer ${data.docs[index]['name']}'s account update status to inactive");
                                       },
                                       child: const Icon(
                                         Icons.person,
@@ -128,6 +142,9 @@ class _PoliceTabState extends State<PoliceTab> {
                                             .collection('Officers')
                                             .doc(data.docs[index]['id'])
                                             .update({"status": "Active"});
+                                        createLogs(
+                                            log:
+                                                "Police officer ${data.docs[index]['name']}'s account update status to active");
                                       },
                                       child: const Icon(
                                         Icons.person_off,
@@ -316,6 +333,16 @@ class _PoliceTabState extends State<PoliceTab> {
                           'gender': genderController.text,
                           'address': addressController.text,
                           'contactnumber': contactNumberController.text
+                        });
+                        await FirebaseFirestore.instance
+                            .collection('logs')
+                            .add({
+                          "dateTime": Timestamp.now(),
+                          "username": "Admin",
+                          "userid": "Admin",
+                          "userDocReference": "",
+                          "logMessage":
+                              "Updated ${nameController.text}'s account details"
                         });
                       },
                     ),
