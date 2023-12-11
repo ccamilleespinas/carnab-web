@@ -25,6 +25,10 @@ class _ReportsTabState extends State<ReportsTab> {
   DateTime? initialDate;
   DateTime? endDate;
 
+  String dropdownValue = '';
+
+  String keywordSearch = '';
+
   getHeight(percent) {
     var toDecimal = percent / 100;
     return MediaQuery.of(context).size.height * toDecimal;
@@ -59,10 +63,39 @@ class _ReportsTabState extends State<ReportsTab> {
     });
   }
 
+  searchBothStatusAndName({required String word}) async {
+    reportsList.clear();
+    for (var i = 0; i < reportsListMasterList.length; i++) {
+      if ((reportsListMasterList[i]
+                  .name
+                  .toLowerCase()
+                  .toString()
+                  .contains(word.toLowerCase().toString()) ||
+              reportsListMasterList[i]
+                  .type
+                  .toLowerCase()
+                  .toString()
+                  .contains(word.toLowerCase().toString())) &&
+          reportsListMasterList[i].status.toLowerCase().toString() ==
+              dropdownValue.toLowerCase().toString()) {
+        reportsList.add(reportsListMasterList[i]);
+      }
+    }
+  }
+
   searchReport({required String word}) async {
     reportsList.clear();
     if (word.isEmpty || word.trim() == "") {
-      reportsList.addAll(reportsListMasterList);
+      if (dropdownValue != '') {
+        for (var i = 0; i < reportsListMasterList.length; i++) {
+          if (reportsListMasterList[i].status.toLowerCase().toString() ==
+              dropdownValue.toLowerCase().toString()) {
+            reportsList.add(reportsListMasterList[i]);
+          }
+        }
+      } else {
+        reportsList.addAll(reportsListMasterList);
+      }
     } else {
       if (word.toLowerCase().toString() == "resolved" ||
           word.toLowerCase().toString() == "resolved") {
@@ -188,34 +221,58 @@ class _ReportsTabState extends State<ReportsTab> {
             pw.Table(border: pw.TableBorder.all(), children: [
               // Header row
               pw.TableRow(children: [
-                pw.Center(child: pw.Text("Reporter")),
-                pw.Center(child: pw.Text("Incident")),
-                pw.Center(child: pw.Text("Date & Time")),
-                pw.Center(child: pw.Text("Location")),
-                pw.Center(child: pw.Text("Police taked action")),
-                pw.Center(child: pw.Text("Status")),
+                pw.Center(
+                    child: pw.Text("Reporter",
+                        textAlign: pw.TextAlign.center,
+                        style: const pw.TextStyle(fontSize: 9))),
+                pw.Center(
+                    child: pw.Text("Incident",
+                        style: const pw.TextStyle(fontSize: 9))),
+                pw.Center(
+                    child: pw.Text("Date & Time",
+                        style: const pw.TextStyle(fontSize: 9))),
+                pw.Center(
+                    child: pw.Text("Location",
+                        style: const pw.TextStyle(fontSize: 9))),
+                pw.Center(
+                    child: pw.Text("Police taked action",
+                        style: const pw.TextStyle(fontSize: 9))),
+                pw.Center(
+                    child: pw.Text("Status",
+                        style: const pw.TextStyle(fontSize: 9))),
               ]),
               //  Data rows
               for (var i = 0; i < reportsList.length; i++)
                 pw.TableRow(children: [
-                  pw.Center(child: pw.Text(reportsList[i].name.toString())),
-                  pw.Center(child: pw.Text(reportsList[i].type.toString())),
+                  pw.Center(
+                      child: pw.Text(reportsList[i].name.toString(),
+                          textAlign: pw.TextAlign.center,
+                          style: const pw.TextStyle(fontSize: 9))),
+                  pw.Center(
+                      child: pw.Text(reportsList[i].type.toString(),
+                          textAlign: pw.TextAlign.center,
+                          style: const pw.TextStyle(fontSize: 9))),
                   pw.Center(
                       child: pw.Text(
-                    ("${DateFormat.yMMMd().format(reportsList[i].dateTime)}  ${DateFormat.jm().format(reportsList[i].dateTime)}")
-                        .toString(),
-                  )),
+                          ("${DateFormat.yMMMd().format(reportsList[i].dateTime)}  ${DateFormat.jm().format(reportsList[i].dateTime)}")
+                              .toString(),
+                          textAlign: pw.TextAlign.center,
+                          style: const pw.TextStyle(fontSize: 9))),
+                  pw.Center(
+                      child: pw.Text(("${reportsList[i].address} ").toString(),
+                          textAlign: pw.TextAlign.center,
+                          style: const pw.TextStyle(fontSize: 9))),
                   pw.Center(
                       child: pw.Text(
-                    ("${reportsList[i].address} ").toString(),
-                  )),
+                          reportsList[i].policeName == null
+                              ? "".toString()
+                              : reportsList[i].policeName!.toString(),
+                          textAlign: pw.TextAlign.center,
+                          style: const pw.TextStyle(fontSize: 9))),
                   pw.Center(
-                      child: pw.Text(
-                    reportsList[i].policeName == null
-                        ? "".toString()
-                        : reportsList[i].policeName!.toString(),
-                  )),
-                  pw.Center(child: pw.Text(reportsList[i].status.toString())),
+                      child: pw.Text(reportsList[i].status.toString(),
+                          textAlign: pw.TextAlign.center,
+                          style: const pw.TextStyle(fontSize: 9))),
                 ]),
 
               // // Data rows
@@ -290,7 +347,42 @@ class _ReportsTabState extends State<ReportsTab> {
                 ),
                 Container(
                   height: 50,
-                  width: 300,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    padding: const EdgeInsets.only(left: 10),
+                    value: dropdownValue,
+                    elevation: 16,
+                    underline: const SizedBox(),
+                    onChanged: (String? value) {
+                      // This is called when the user selects an item.
+                      setState(() {
+                        dropdownValue = value!;
+                        if (dropdownValue != '' &&
+                            searchController.text != '') {
+                          searchBothStatusAndName(
+                              word: searchController.text.toString());
+                        } else {
+                          searchReport(word: value.toString());
+                        }
+                      });
+                    },
+                    items: ['', 'Resolved', 'Unresolved']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  width: 150,
                   decoration: BoxDecoration(
                       border: Border.all(
                         color: Colors.black,
@@ -299,11 +391,15 @@ class _ReportsTabState extends State<ReportsTab> {
                   child: TextFormField(
                     onChanged: (value) {
                       setState(() {
-                        searchReport(word: value.toString());
+                        if (dropdownValue != '' && value != '') {
+                          searchBothStatusAndName(word: value.toString());
+                        } else {
+                          searchReport(word: value.toString());
+                        }
                       });
                     },
                     decoration: const InputDecoration(
-                        hintText: 'Search Report',
+                        hintText: 'Search',
                         hintStyle: TextStyle(fontFamily: 'QRegular'),
                         prefixIcon: Icon(
                           Icons.search,
